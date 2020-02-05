@@ -27,3 +27,4 @@ dist
 .idea/vcs.xml
 __pycache__/
 venv/
+data/settings.conf
