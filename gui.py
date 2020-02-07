@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QApplication, QLineEdit, QPushButto
     QMessageBox, QPlainTextEdit
 
 
-#sys.setdefaultencoding('utf-8') #
+#sys.setdefaultencoding('utf-8')
 
 gameDir = ''
 iconPath = 'data/icon.png'
