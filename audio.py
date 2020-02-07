@@ -26,9 +26,20 @@ def getLocation():
 
     return -1, -1
 
+def playAudio(path):
+    pyautogui.keyDown('/')
+    #time.sleep(0.5)
+    pygame.mixer.music.load(path)
+    pygame.mixer_music.set_volume(1)
+    pygame.mixer.music.play(loops=0, start=0.0)
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(5)
+    time.sleep(0.5)
+    pyautogui.keyUp('/')
+
 
 lastStop = (0, 0)
-
+way = 1
 pygame.mixer.init()
 
 while True:
@@ -37,14 +48,25 @@ while True:
     name = 0
     for stop in stops:
         name += 1
-        xi, yi = stop
+        xi, yi, typ = stop
         if abs(xi-x) <= 15 and abs(yi-y) <=15 and lastStop != stop:
+            pyautogui.keyDown('/')
+            if typ == 1:
+                playAudio('data/audio/' + str(name) + '.mp3')
+                playAudio('data/audio/pok.mp3')
+                way = abs(1 - way)
+            if typ == 0:
+                if way == 0:
+                    playAudio('data/audio/' + str(name) + '.mp3')
+                    playAudio('data/audio/next.mp3')
+                    playAudio('data/audio/' + str(name+1) + '.mp3')
+                if way == 1:
+                    playAudio('data/audio/' + str(name) + '.mp3')
+                    playAudio('data/audio/next.mp3')
+                    playAudio('data/audio/' + str(name - 1) + '.mp3')
             lastStop = stop
-            pygame.mixer.music.load("data/audio/" + str(name) + ".mp3")
-            pygame.mixer_music.set_volume(1)
-            pygame.mixer.music.play(loops=0, start=0.0)
-            while pygame.mixer.music.get_busy():
-                pygame.time.Clock().tick(10)
+            pyautogui.keyUp('/')
+
 
     time.sleep(1.5)
 
