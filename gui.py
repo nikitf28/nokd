@@ -14,8 +14,7 @@ from configparser import SafeConfigParser, ConfigParser
 from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import QWidget, QLabel, QApplication, QLineEdit, QPushButton, QComboBox, QFileDialog, \
-    QMessageBox, QPlainTextEdit
-
+    QMessageBox, QPlainTextEdit, QRadioButton
 
 #sys.setdefaultencoding('utf-8')
 
@@ -151,6 +150,19 @@ class GUI(QWidget):
         graphicEdit.setGeometry(QRect(430, 100, 60, 20))
         graphicEdit.setFont(defaultFont)
         graphicEdit.setDisabled(True)
+
+        radiobutton = QRadioButton("от A+1 до B", self)
+        radiobutton.setFont(defaultFont)
+        radiobutton.setChecked(True)
+        radiobutton.route = 1
+        radiobutton.move(360, 200)
+
+        radiobutton = QRadioButton("от B+1 до A", self)
+        radiobutton.setFont(defaultFont)
+        radiobutton.route = 2
+        radiobutton.move(360, 220)
+
+
 
         #logsBox.move(230, 150)
         self.logsBox.setGeometry(QRect(230, 150, 100, 100))
