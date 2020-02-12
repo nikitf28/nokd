@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import datetime
 import json
 import shutil
 import sys
@@ -17,12 +17,12 @@ from PyQt5.QtWidgets import QWidget, QLabel, QApplication, QLineEdit, QPushButto
     QMessageBox, QPlainTextEdit
 
 
-#sys.setdefaultencoding('utf-8')
+import updateTools
 
 gameDir = ''
-iconPath = 'data/icon.png'
+iconPath = settings.iconPath
 radarsetPath = '/MTA/MTA/cgui/images/radarset'
-defaultFont = QFont('SansSerif', 10)
+defaultFont = QFont('Arial', 10)
 configFile = 'data/settings.conf'
 parser = ConfigParser()
 username = '-1'
@@ -37,6 +37,7 @@ class GUI(QWidget):
 
     def __init__(self):
         super().__init__()
+        updateTools.updateProg()
         parser.read(configFile)
         global gameDir
         gameDir = parser.get('NOKD', 'game_path')
@@ -94,11 +95,11 @@ class GUI(QWidget):
         pathButton.move(15, 220)
         pathButton.clicked.connect(getfile)
 
-        driverNameText = QLabel('Водитель: Example_Example', self)
+        driverNameText = QLabel('Водитель:                                                                     ', self)
         driverNameText.move(230, 10)
         driverNameText.setFont(defaultFont)
 
-        driverOrganizationText = QLabel('Организация: ООО ЧАТП "НОКД"', self)
+        driverOrganizationText = QLabel('Организация:                                                          ', self)
         driverOrganizationText.move(230, 40)
         driverOrganizationText.setFont(defaultFont)
 
@@ -150,12 +151,13 @@ class GUI(QWidget):
         graphicEdit = QLineEdit(self)
         graphicEdit.setGeometry(QRect(430, 100, 60, 20))
         graphicEdit.setFont(defaultFont)
+        graphicEdit.setText('--')
         graphicEdit.setDisabled(True)
 
         #logsBox.move(230, 150)
         self.logsBox.setGeometry(QRect(230, 150, 100, 100))
 
-        self.setWindowTitle('НОКД - клиент для водителей ЧАТП (beta 2.01)')
+        self.setWindowTitle('НОКД - клиент для водителей ЧАТП (' + settings.verString +  ')')
         self.setWindowIcon(QIcon(iconPath))
         self.setFixedSize(600, 260)
         self.show()
@@ -172,7 +174,7 @@ class GUI(QWidget):
             routeBox.setEnabled(False)
             graphicEdit.setEnabled(False)
             workButton.setText('Закончить смену')
-            timeBegin = time.process_time()
+            timeBegin = datetime.datetime.now()
             api.startWork(username, routeBox.currentText(), graphicEdit.text())
             thread = location.LocationControl(parent=self, mainWindow = self)
             thread.start()
@@ -185,7 +187,8 @@ class GUI(QWidget):
             busBox.setEnabled(True)
             routeBox.setEnabled(True)
             workButton.setText('  Выйти на линию   ')
-            api.endWork(username, str((time.process_time() - timeBegin)//60))
+            api.endWork(username, str((datetime.datetime.now() - timeBegin)//60))
+
 
 def getfile():
     global gameDir
@@ -200,7 +203,7 @@ def getfile():
     elif dirName != '':
         pathErrorBox = QMessageBox()
         pathErrorBox.setIcon(QMessageBox.Critical)
-        pathErrorBox.setText("Дебил, в этой папке нет фарминции!")
+        pathErrorBox.setText("Ничего нового. Ты так и не смог найти нужную папку. Повторяю: в этой папке фарминции нет!")
         pathErrorBox.setWindowTitle("Тупой водитель!")
         pathErrorBox.setStandardButtons(QMessageBox.Ok)
         pathErrorBox.setWindowIcon(QIcon(iconPath))
@@ -307,11 +310,13 @@ def loginAPI():
         parser.write(cf)
 
         nickName = api.html_decode(api.userNickname(loginData))
+        #print(nickName)
         server = api.html_decode(api.userServer(loginData))
-        organisation = api.html_decode(api.userOrganisation(loginData))
+        organisationID = api.html_decode(api.userOrganisation(loginData))
+        organisation = api.html_decode(api.getOrgName(organisationID))
 
         driverNameText.setText('Водитель: ' + nickName + ' #' + server)
-        driverOrganizationText.setText('Организация: ' + organisation)
+        driverOrganizationText.setText('Организация: ' + organisation + ' [' + organisationID + ']')
 
         username = loginData
 
@@ -331,6 +336,8 @@ def loginAPI():
 
         if buses is not None:
             busBox.addItem(api.html_decode(buses['model']+ ' ' + buses['number']))
+
+        routeBox.clear()
 
         if routes is not None:
             for route in routes:
