@@ -17,7 +17,6 @@ from PyQt5.QtWidgets import QWidget, QLabel, QApplication, QLineEdit, QPushButto
     QMessageBox, QPlainTextEdit
 
 
-#sys.setdefaultencoding('utf-8')
 import updateTools
 
 gameDir = ''
@@ -96,7 +95,7 @@ class GUI(QWidget):
         pathButton.move(15, 220)
         pathButton.clicked.connect(getfile)
 
-        driverNameText = QLabel('Водитель:                                ', self)
+        driverNameText = QLabel('Водитель:                                                                     ', self)
         driverNameText.move(230, 10)
         driverNameText.setFont(defaultFont)
 

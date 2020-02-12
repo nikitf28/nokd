@@ -183,7 +183,7 @@ def getVersion():
     global pwd
     domain = settings.domain
     pwd = settings.pwd
-    url = domain + '/API/methods.php?class=Program&method=getVersion&pass=0a773ea7cb61f3d1655d731ff6507dc47b5481f4' \
+    url = domain + '/API/methods.php?class=Program&method=getVersion&' \
           + pwd
     # print(url)
     try:
@@ -223,7 +223,10 @@ def countStat():
         response.encoding = 'utf-8'
         response.raise_for_status()
         # print(response.text)
-        return  False
+        print(response.text)
+        if response.text == 'a\n':
+            return False
+        return  True
     except HTTPError as http_err:
         return True
     except Exception as err:
