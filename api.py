@@ -6,9 +6,6 @@ import requests
 
 import settings
 
-domain = settings.domain
-pwd = settings.pwd
-
 
 def html_decode(s):
     """
@@ -28,11 +25,9 @@ def html_decode(s):
 
 
 def login(username, password):
-    domain = settings.domain
-    pwd = settings.pwd
-    url = domain + '/API/methods.php?class=User&method=isDataValidate&username=' + username + '&password=' + password + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=isDataValidate&username=' + username + '&password=' + password + settings.pwd
     try:
-        #print(url)
+        # print(url)
         response = requests.get(url)
         response.encoding = 'utf-8'
         response.raise_for_status()
@@ -47,12 +42,12 @@ def login(username, password):
 
 
 def userNickname(username):
-    url = domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=nickname' + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=nickname' + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
         response.raise_for_status()
-        #print(response.text)
+        # print(response.text)
         return response.text
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')  # Python 3.6
@@ -63,7 +58,7 @@ def userNickname(username):
 
 
 def userServer(username):
-    url = domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=server' + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=server' + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
@@ -79,7 +74,7 @@ def userServer(username):
 
 
 def userOrganisation(username):
-    url = domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=organization' + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=organization' + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
@@ -95,7 +90,7 @@ def userOrganisation(username):
 
 
 def getBuses(username):
-    url = domain + '/API/methods.php?class=User&method=getBus&username=' + username + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=getBus&username=' + username + settings.pwd
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -111,7 +106,7 @@ def getBuses(username):
 
 
 def getRoutes(username):
-    url = domain + '/API/methods.php?class=Routes&method=get&username=' + username + pwd
+    url = settings.domain + '/API/methods.php?class=Routes&method=get&username=' + username + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
@@ -127,8 +122,8 @@ def getRoutes(username):
 
 
 def startWork(username, route, graphic):
-    url = domain + '/API/methods.php?class=User&method=setStatus&username=' + username + '&route=' + route + \
-          '&station=569&graphic=' + graphic + '&x=-100&y=-100' + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=setStatus&username=' + username + '&route=' + route + \
+          '&station=569&graphic=' + graphic + '&x=-100&y=-100' + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
@@ -145,8 +140,8 @@ def startWork(username, route, graphic):
 
 
 def endWork(username, deltaTime):
-    url = domain + '/API/methods.php?class=User&method=endWork&username=' + username + '&races=1&racesTime=' \
-          + deltaTime + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=endWork&username=' + username + '&races=1&racesTime=' \
+          + deltaTime + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
@@ -162,7 +157,7 @@ def endWork(username, deltaTime):
 
 
 def updateWork(username, x, y):
-    url = domain + '/API/methods.php?class=User&method=updateStatus&username=' + username + '&x=' + x + '&y=' + y + pwd
+    url = settings.domain + '/API/methods.php?class=User&method=updateStatus&username=' + username + '&x=' + x + '&y=' + y + settings.pwd
     # print(url)
     try:
         response = requests.get(url)
@@ -179,12 +174,8 @@ def updateWork(username, x, y):
 
 
 def getVersion():
-    global domain
-    global pwd
-    domain = settings.domain
-    pwd = settings.pwd
-    url = domain + '/API/methods.php?class=Program&method=getVersion&' \
-          + pwd
+    url = settings.domain + '/API/methods.php?class=Program&method=getVersion&' \
+          + settings.pwd
     # print(url)
     try:
         response = requests.get(url)
@@ -201,7 +192,7 @@ def getVersion():
 
 
 def getOrgName(orgID):
-    url = domain + '/API/methods.php?class=Org&method=getName&id=' + orgID + '&param=organization' + pwd
+    url = settings.domain + '/API/methods.php?class=Org&method=getName&id=' + orgID + '&param=organization' + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
@@ -226,10 +217,42 @@ def countStat():
         print(response.text)
         if response.text == 'a\n':
             return False
-        return  True
+        return True
     except HTTPError as http_err:
         return True
     except Exception as err:
         return True
     else:
         return False
+
+
+def getStops(route):
+    url = settings.domain + '/API/methods.php?class=Routes&method=getInf&number=' + route + settings.pwd
+    try:
+        response = requests.get(url)
+        response.encoding = 'utf-8'
+        response.raise_for_status()
+        # print(response.text)
+        return response.text
+    except HTTPError as http_err:
+        print(f'HTTP error occurred: {http_err}')  # Python 3.6
+    except Exception as err:
+        print(f'Other error occurred: {err}')  # Python 3.6
+    else:
+        print('Success!')
+
+
+def checkAudioDLC(orgID):
+    url = settings.domain + '/API/methods.php?class=Org&method=ifDlc&id=' + orgID + '&param=organization' + settings.pwd
+    try:
+        response = requests.get(url)
+        response.encoding = 'utf-8'
+        response.raise_for_status()
+        # print(response.text)
+        return response.text
+    except HTTPError as http_err:
+        print(f'HTTP error occurred: {http_err}')  # Python 3.6
+    except Exception as err:
+        print(f'Other error occurred: {err}')  # Python 3.6
+    else:
+        print('Success!')

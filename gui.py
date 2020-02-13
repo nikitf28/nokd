@@ -9,7 +9,7 @@ import time
 import api
 import settings
 import location
-from configparser import SafeConfigParser, ConfigParser
+from configparser import ConfigParser
 
 from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QIcon, QFont
