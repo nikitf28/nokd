@@ -166,14 +166,24 @@ class GUI(QWidget):
         radiobutton2.route = 2
         radiobutton2.move(230, 220)
 
+        openDoorText = QLabel('Открытие дверей:', self)
+        openDoorText.setFont(defaultFont)
+        openDoorText.move(230, 250)
 
+        openDoorEdit = QLineEdit(self)
+        openDoorEdit.setMaxLength(1)
+        openDoorEdit.setGeometry(QRect(340, 250, 20, 20))
+        openDoorEdit.setFont(defaultFont)
 
+        voiceText = QLabel('Voice chat:', self)
+        voiceText.setFont(defaultFont)
+        voiceText.move(370, 250)
         #logsBox.move(230, 150)
-        self.logsBox.setGeometry(QRect(230, 150, 100, 100))
+        #self.logsBox.setGeometry(QRect(230, 150, 100, 100))
 
         self.setWindowTitle('НОКД - клиент для водителей ЧАТП (' + settings.verString +  ')')
         self.setWindowIcon(QIcon(iconPath))
-        self.setFixedSize(600, 260)
+        self.setFixedSize(600, 350)
         self.show()
 
         loginAPI()
@@ -359,7 +369,13 @@ def loginAPI():
 
 def initAutoInfo():
     currentRoute = routeBox.currentText()
-    busStops = json.loads(api.getStops(currentRoute))
+    nonParsedStops = api.getStops(currentRoute)
+    if nonParsedStops is None:
+        radiobutton1.setText('На данном маршруте нет автоинформатора')
+        radiobutton2.setText('На данном маршруте нет автоинформатора')
+        return
+    busStops = json.loads(nonParsedStops)
+
     endStops = []
 
     for i in range(len(busStops)):
