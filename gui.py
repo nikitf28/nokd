@@ -31,7 +31,6 @@ color = (131, 197, 226)
 timeBegin = 0
 
 
-
 class GUI(QWidget):
 
     def __init__(self):
@@ -110,9 +109,6 @@ class GUI(QWidget):
         busBox = QComboBox(self)
         busBox.setFont(defaultFont)
         busBox.setGeometry(QRect(290, 70, 250, 20))
-        #busBox.addItem('ПАЗ 32053 №О000ОО77')
-        #busBox.addItem('Газель №К777ОТ77')
-        #busBox.addItem('МАЗ 203 №С123ТС77')
 
         busText = QLabel('Маршрут: ', self)
         busText.move(230, 100)
@@ -124,10 +120,6 @@ class GUI(QWidget):
         routeBox.setGeometry(QRect(300, 100, 60, 20))
         routeBox.activated.connect(initAutoInfo)
         routeBox.setDisabled(True)
-        #routeBox.addItem('4')
-        #routeBox.addItem('6')
-        #routeBox.addItem('К5')
-        #routeBox.addItem('ПАРК')
 
         workButton = QPushButton('  Выйти на линию   ', self)
         workButton.move(230, 130)
@@ -172,16 +164,37 @@ class GUI(QWidget):
 
         openDoorEdit = QLineEdit(self)
         openDoorEdit.setMaxLength(1)
-        openDoorEdit.setGeometry(QRect(340, 250, 20, 20))
+        openDoorEdit.setGeometry(QRect(340, 250, 15, 20))
         openDoorEdit.setFont(defaultFont)
 
         voiceText = QLabel('Voice chat:', self)
         voiceText.setFont(defaultFont)
         voiceText.move(370, 250)
-        #logsBox.move(230, 150)
-        #self.logsBox.setGeometry(QRect(230, 150, 100, 100))
 
-        self.setWindowTitle('НОКД - клиент для водителей ЧАТП (' + settings.verString +  ')')
+        voiceEdit = QLineEdit(self)
+        voiceEdit.setMaxLength(1)
+        voiceEdit.setGeometry(QRect(440, 250, 15, 20))
+        voiceEdit.setFont(defaultFont)
+
+        warnDoorText = QLabel('Предупреждение о закрытии: Ctrl+', self)
+        warnDoorText.setFont(defaultFont)
+        warnDoorText.move(230, 275)
+
+        warnDoorEdit = QLineEdit(self)
+        warnDoorEdit.setMaxLength(1)
+        warnDoorEdit.setGeometry(QRect(440, 275, 15, 20))
+        warnDoorEdit.setFont(defaultFont)
+
+        routeInfoText = QLabel('Информация о маршруте: Ctrl+', self)
+        routeInfoText.setFont(defaultFont)
+        routeInfoText.move(230, 300)
+
+        routeInfoEdit = QLineEdit(self)
+        routeInfoEdit.setMaxLength(1)
+        routeInfoEdit.setGeometry(QRect(420, 300, 15, 20))
+        routeInfoEdit.setFont(defaultFont)
+
+        self.setWindowTitle('НОКД - клиент для водителей ЧАТП (' + settings.verString + ')')
         self.setWindowIcon(QIcon(iconPath))
         self.setFixedSize(600, 350)
         self.show()
@@ -192,15 +205,15 @@ class GUI(QWidget):
         if not settings.located_status:
             global timeBegin
             settings.located_status = True
-            #accidentButton.setEnabled(True)
-            #breakButton.setEnabled(True)
+            # accidentButton.setEnabled(True)
+            # breakButton.setEnabled(True)
             busBox.setEnabled(False)
             routeBox.setEnabled(False)
             graphicEdit.setEnabled(False)
             workButton.setText('Закончить смену')
             timeBegin = datetime.datetime.now()
             api.startWork(username, routeBox.currentText(), graphicEdit.text())
-            thread = location.LocationControl(parent=self, mainWindow = self)
+            thread = location.LocationControl(parent=self, mainWindow=self)
             thread.start()
 
         else:
@@ -211,7 +224,7 @@ class GUI(QWidget):
             busBox.setEnabled(True)
             routeBox.setEnabled(True)
             workButton.setText('  Выйти на линию   ')
-            api.endWork(username, str((datetime.datetime.now() - timeBegin)//60))
+            api.endWork(username, str((datetime.datetime.now() - timeBegin) // 60))
 
 
 def getfile():
@@ -227,7 +240,8 @@ def getfile():
     elif dirName != '':
         pathErrorBox = QMessageBox()
         pathErrorBox.setIcon(QMessageBox.Critical)
-        pathErrorBox.setText("Ничего нового. Ты так и не смог найти нужную папку. Повторяю: в этой папке фарминции нет!")
+        pathErrorBox.setText(
+            "Ничего нового. Ты так и не смог найти нужную папку. Повторяю: в этой папке фарминции нет!")
         pathErrorBox.setWindowTitle("Тупой водитель!")
         pathErrorBox.setStandardButtons(QMessageBox.Ok)
         pathErrorBox.setWindowIcon(QIcon(iconPath))
@@ -334,7 +348,7 @@ def loginAPI():
         parser.write(cf)
 
         nickName = api.html_decode(api.userNickname(loginData))
-        #print(nickName)
+        # print(nickName)
         server = api.html_decode(api.userServer(loginData))
         organisationID = api.html_decode(api.userOrganisation(loginData))
         organisation = api.html_decode(api.getOrgName(organisationID))
@@ -350,8 +364,8 @@ def loginAPI():
         busBox.setEnabled(True)
         routeBox.setEnabled(True)
         graphicEdit.setEnabled(True)
-        #breakButton.setEnabled(True)
-        #accidentButton.setEnabled(True)
+        # breakButton.setEnabled(True)
+        # accidentButton.setEnabled(True)
 
         busBox.clear()
         buses = json.loads(api.getBuses(loginData))
@@ -359,13 +373,14 @@ def loginAPI():
         routes = json.loads(api.getRoutes(loginData))
 
         if buses is not None:
-            busBox.addItem(api.html_decode(buses['model']+ ' ' + buses['number']))
+            busBox.addItem(api.html_decode(buses['model'] + ' ' + buses['number']))
 
         routeBox.clear()
 
         if routes is not None:
             for route in routes:
                 routeBox.addItem(api.html_decode(route['number']))
+
 
 def initAutoInfo():
     currentRoute = routeBox.currentText()
@@ -379,13 +394,14 @@ def initAutoInfo():
     endStops = []
 
     for i in range(len(busStops)):
-        #print(busStops[i])
+        # print(busStops[i])
         if busStops[i]['end'] == '1':
             endStops.append(i)
 
-    #print(endStops)
-    radiobutton1.setText('от ' + busStops[endStops[1] - 1]['stops'] + ' до ' + busStops[endStops[0]]['stops'] )
-    radiobutton2.setText('от ' + busStops[endStops[0] + 1]['stops'] + ' до ' + busStops[endStops[1]]['stops'] )
+    # print(endStops)
+    radiobutton1.setText('от ' + busStops[endStops[1] - 1]['stops'] + ' до ' + busStops[endStops[0]]['stops'])
+    radiobutton2.setText('от ' + busStops[endStops[0] + 1]['stops'] + ' до ' + busStops[endStops[1]]['stops'])
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

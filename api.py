@@ -25,7 +25,8 @@ def html_decode(s):
 
 
 def login(username, password):
-    url = settings.domain + '/API/methods.php?class=User&method=isDataValidate&username=' + username + '&password=' + password + settings.pwd
+    url = settings.domain + '/API/methods.php?class=User&method=isDataValidate&username=' + username + '&password=' \
+          + password + settings.pwd
     try:
         # print(url)
         response = requests.get(url)
@@ -42,7 +43,8 @@ def login(username, password):
 
 
 def userNickname(username):
-    url = settings.domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=nickname' + settings.pwd
+    url = settings.domain + '/API/methods.php?class=User&method=get&username=' + username + '&param=nickname' \
+          + settings.pwd
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'
