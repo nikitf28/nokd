@@ -5,3 +5,4 @@ verString = 'Beta 2.02'
 domain = ''
 pwd = ''
 iconPath = 'data/icon.png'
+audioDLCEnabled = False

@@ -42,13 +42,14 @@ class GUI(QWidget):
         gameDir = parser.get('NOKD', 'game_path')
         self.logsBox = QPlainTextEdit()
         self.initUI()
+        initAutoInfo()
 
     def closeEvent(self, event):
         api.endWork(username, str((time.process_time() - timeBegin) // 60))
 
     def initUI(self):
         global loginEdit, passwordEdit, loginStatusText, driverNameText, driverOrganizationText, workButton, \
-            breakButton, accidentButton, routeBox, busBox, graphicEdit
+            breakButton, accidentButton, routeBox, busBox, graphicEdit, radiobutton1, radiobutton2
 
         loginText = QLabel('Логин:', self)
         loginText.setFont(defaultFont)
@@ -121,6 +122,7 @@ class GUI(QWidget):
         routeBox = QComboBox(self)
         routeBox.setFont(defaultFont)
         routeBox.setGeometry(QRect(300, 100, 60, 20))
+        routeBox.activated.connect(initAutoInfo)
         routeBox.setDisabled(True)
         #routeBox.addItem('4')
         #routeBox.addItem('6')
@@ -153,16 +155,16 @@ class GUI(QWidget):
         graphicEdit.setText('--')
         graphicEdit.setDisabled(True)
 
-        radiobutton = QRadioButton("от A+1 до B", self)
-        radiobutton.setFont(defaultFont)
-        radiobutton.setChecked(True)
-        radiobutton.route = 1
-        radiobutton.move(360, 200)
+        radiobutton1 = QRadioButton("от A+1 до B                                                                ", self)
+        radiobutton1.setFont(defaultFont)
+        radiobutton1.setChecked(True)
+        radiobutton1.route = 1
+        radiobutton1.move(230, 200)
 
-        radiobutton = QRadioButton("от B+1 до A", self)
-        radiobutton.setFont(defaultFont)
-        radiobutton.route = 2
-        radiobutton.move(360, 220)
+        radiobutton2 = QRadioButton("от B+1 до A                                                                ", self)
+        radiobutton2.setFont(defaultFont)
+        radiobutton2.route = 2
+        radiobutton2.move(230, 220)
 
 
 
@@ -355,6 +357,19 @@ def loginAPI():
             for route in routes:
                 routeBox.addItem(api.html_decode(route['number']))
 
+def initAutoInfo():
+    currentRoute = routeBox.currentText()
+    busStops = json.loads(api.getStops(currentRoute))
+    endStops = []
+
+    for i in range(len(busStops)):
+        #print(busStops[i])
+        if busStops[i]['end'] == '1':
+            endStops.append(i)
+
+    #print(endStops)
+    radiobutton1.setText('от ' + busStops[endStops[1] - 1]['stops'] + ' до ' + busStops[endStops[0]]['stops'] )
+    radiobutton2.setText('от ' + busStops[endStops[0] + 1]['stops'] + ' до ' + busStops[endStops[1]]['stops'] )
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
