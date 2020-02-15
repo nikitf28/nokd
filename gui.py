@@ -14,7 +14,7 @@ from configparser import ConfigParser, NoOptionError
 from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtWidgets import QWidget, QLabel, QApplication, QLineEdit, QPushButton, QComboBox, QFileDialog, \
-    QMessageBox, QPlainTextEdit, QRadioButton
+    QMessageBox, QPlainTextEdit, QRadioButton, QCheckBox
 
 import updateTools
 
@@ -164,7 +164,6 @@ class GUI(QWidget):
         openDoorText.move(230, 250)
 
         openDoorEdit = QLineEdit(self)
-        openDoorEdit.setMaxLength(1)
         openDoorEdit.setGeometry(QRect(340, 250, 15, 20))
         openDoorEdit.setFont(defaultFont)
         openDoorEdit.setText(parser.get('NOKD', 'openDoor'))
@@ -174,7 +173,6 @@ class GUI(QWidget):
         voiceText.move(370, 250)
 
         voiceEdit = QLineEdit(self)
-        voiceEdit.setMaxLength(1)
         voiceEdit.setGeometry(QRect(440, 250, 15, 20))
         voiceEdit.setFont(defaultFont)
         voiceEdit.setText(parser.get('NOKD', 'voice'))
@@ -208,6 +206,22 @@ class GUI(QWidget):
         welcomeEdit.setGeometry(QRect(345, 325, 15, 20))
         welcomeEdit.setFont(defaultFont)
         welcomeEdit.setText(parser.get('NOKD', 'welcome'))
+
+        welcomeCheck = QCheckBox('Приветствие', self)
+        welcomeCheck.setFont(defaultFont)
+        welcomeCheck.move(230, 180)
+
+        routeCheck = QCheckBox('Маршрут', self)
+        routeCheck.setFont(defaultFont)
+        routeCheck.move(330, 180)
+
+        stuffCheck = QCheckBox('"Не забывайте свои вещи"', self)
+        stuffCheck.setFont(defaultFont)
+        stuffCheck.move(410, 180)
+
+        useInfoCheck = QCheckBox('Использовать автоинформатор', self)
+        useInfoCheck.setFont(defaultFont)
+        useInfoCheck.move(230, 160)
 
         self.setWindowTitle('НОКД - клиент для водителей ЧАТП (' + settings.verString + ')')
         self.setWindowIcon(QIcon(iconPath))
@@ -418,7 +432,8 @@ def initAutoInfo():
     radiobutton2.setText('от ' + busStops[endStops[0] + 1]['stops'] + ' до ' + busStops[endStops[1]]['stops'])
 
 def initParser():
-    fields = ['game_path', 'login', 'password', 'openDoor', 'voice', 'warnDoor', 'routeInfo', 'welcome']
+    fields = ['game_path', 'login', 'password', 'openDoor', 'voice', 'warnDoor', 'routeInfo', 'welcome', 'stuffCheck',
+              'welcomeCheck', 'routeCheck']
     for field in fields:
         try:
             parser.get('NOKD', field)
