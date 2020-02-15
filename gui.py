@@ -9,7 +9,7 @@ import time
 import api
 import settings
 import location
-from configparser import ConfigParser
+from configparser import ConfigParser, NoOptionError
 
 from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QIcon, QFont
@@ -37,6 +37,7 @@ class GUI(QWidget):
         super().__init__()
         updateTools.updateProg()
         parser.read(configFile)
+        initParser()
         global gameDir
         gameDir = parser.get('NOKD', 'game_path')
         self.logsBox = QPlainTextEdit()
@@ -166,6 +167,7 @@ class GUI(QWidget):
         openDoorEdit.setMaxLength(1)
         openDoorEdit.setGeometry(QRect(340, 250, 15, 20))
         openDoorEdit.setFont(defaultFont)
+        openDoorEdit.setText(parser.get('NOKD', 'openDoor'))
 
         voiceText = QLabel('Voice chat:', self)
         voiceText.setFont(defaultFont)
@@ -175,6 +177,7 @@ class GUI(QWidget):
         voiceEdit.setMaxLength(1)
         voiceEdit.setGeometry(QRect(440, 250, 15, 20))
         voiceEdit.setFont(defaultFont)
+        voiceEdit.setText(parser.get('NOKD', 'voice'))
 
         warnDoorText = QLabel('Предупреждение о закрытии: Ctrl+', self)
         warnDoorText.setFont(defaultFont)
@@ -184,6 +187,7 @@ class GUI(QWidget):
         warnDoorEdit.setMaxLength(1)
         warnDoorEdit.setGeometry(QRect(440, 275, 15, 20))
         warnDoorEdit.setFont(defaultFont)
+        warnDoorEdit.setText(parser.get('NOKD', 'warnDoor'))
 
         routeInfoText = QLabel('Информация о маршруте: Ctrl+', self)
         routeInfoText.setFont(defaultFont)
@@ -193,10 +197,21 @@ class GUI(QWidget):
         routeInfoEdit.setMaxLength(1)
         routeInfoEdit.setGeometry(QRect(420, 300, 15, 20))
         routeInfoEdit.setFont(defaultFont)
+        routeInfoEdit.setText(parser.get('NOKD', 'routeInfo'))
+
+        welcomeText = QLabel('Приветствие: Ctrl+', self)
+        welcomeText.setFont(defaultFont)
+        welcomeText.move(230, 325)
+
+        welcomeEdit = QLineEdit(self)
+        welcomeEdit.setMaxLength(1)
+        welcomeEdit.setGeometry(QRect(345, 325, 15, 20))
+        welcomeEdit.setFont(defaultFont)
+        welcomeEdit.setText(parser.get('NOKD', 'welcome'))
 
         self.setWindowTitle('НОКД - клиент для водителей ЧАТП (' + settings.verString + ')')
         self.setWindowIcon(QIcon(iconPath))
-        self.setFixedSize(600, 350)
+        self.setFixedSize(600, 370)
         self.show()
 
         loginAPI()
@@ -402,6 +417,13 @@ def initAutoInfo():
     radiobutton1.setText('от ' + busStops[endStops[1] - 1]['stops'] + ' до ' + busStops[endStops[0]]['stops'])
     radiobutton2.setText('от ' + busStops[endStops[0] + 1]['stops'] + ' до ' + busStops[endStops[1]]['stops'])
 
+def initParser():
+    fields = ['game_path', 'login', 'password', 'openDoor', 'voice', 'warnDoor', 'routeInfo', 'welcome']
+    for field in fields:
+        try:
+            parser.get('NOKD', field)
+        except NoOptionError:
+            parser.set('NOKD', field, '')
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
