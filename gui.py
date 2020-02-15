@@ -49,7 +49,8 @@ class GUI(QWidget):
 
     def initUI(self):
         global loginEdit, passwordEdit, loginStatusText, driverNameText, driverOrganizationText, workButton, \
-            breakButton, accidentButton, routeBox, busBox, graphicEdit, radiobutton1, radiobutton2
+            breakButton, accidentButton, routeBox, busBox, graphicEdit, radiobutton1, radiobutton2, welcomeCheck, \
+        routeCheck, stuffCheck, useInfoCheck
 
         loginText = QLabel('Логин:', self)
         loginText.setFont(defaultFont)
@@ -210,18 +211,26 @@ class GUI(QWidget):
         welcomeCheck = QCheckBox('Приветствие', self)
         welcomeCheck.setFont(defaultFont)
         welcomeCheck.move(230, 180)
+        if parser.get('NOKD', 'welcomeCheck') == 'True':
+            welcomeCheck.setChecked()
 
         routeCheck = QCheckBox('Маршрут', self)
         routeCheck.setFont(defaultFont)
         routeCheck.move(330, 180)
+        if parser.get('NOKD', 'routeCheck') == 'True':
+            routeCheck.setChecked()
 
         stuffCheck = QCheckBox('"Не забывайте свои вещи"', self)
         stuffCheck.setFont(defaultFont)
         stuffCheck.move(410, 180)
+        if parser.get('NOKD', 'stuffCheck') == 'True':
+            stuffCheck.setChecked()
 
         useInfoCheck = QCheckBox('Использовать автоинформатор', self)
         useInfoCheck.setFont(defaultFont)
         useInfoCheck.move(230, 160)
+        if parser.get('NOKD', 'useInfoCheck') == 'True':
+            useInfoCheck.setChecked()
 
         self.setWindowTitle('НОКД - клиент для водителей ЧАТП (' + settings.verString + ')')
         self.setWindowIcon(QIcon(iconPath))
@@ -431,14 +440,22 @@ def initAutoInfo():
     radiobutton1.setText('от ' + busStops[endStops[1] - 1]['stops'] + ' до ' + busStops[endStops[0]]['stops'])
     radiobutton2.setText('от ' + busStops[endStops[0] + 1]['stops'] + ' до ' + busStops[endStops[1]]['stops'])
 
+
 def initParser():
-    fields = ['game_path', 'login', 'password', 'openDoor', 'voice', 'warnDoor', 'routeInfo', 'welcome', 'stuffCheck',
-              'welcomeCheck', 'routeCheck']
+    fields = ['game_path', 'login', 'password', 'openDoor', 'voice', 'warnDoor', 'routeInfo', 'welcome']
+    checkFields = ['stuffCheck','welcomeCheck', 'routeCheck', 'useInfoCheck']
     for field in fields:
         try:
             parser.get('NOKD', field)
         except NoOptionError:
             parser.set('NOKD', field, '')
+
+    for field in checkFields:
+        try:
+            parser.get('NOKD', field)
+        except NoOptionError:
+            parser.set('NOKD', field, 'False')
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
