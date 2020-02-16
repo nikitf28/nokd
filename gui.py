@@ -210,7 +210,7 @@ class GUI(QWidget):
 
         welcomeCheck = QCheckBox('Приветствие', self)
         welcomeCheck.setFont(defaultFont)
-        welcomeCheck.move(230, 180)
+        welcomeCheck.move(230, 180)     
         if parser.get('NOKD', 'welcomeCheck') == 'True':
             welcomeCheck.setChecked()
 
