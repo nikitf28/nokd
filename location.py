@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-
+import keyboard as keyboard
 import pyautogui
 import time
 
@@ -27,9 +26,22 @@ def getLocation():
 
 class LocationControl(QThread):
 
-    def __init__(self, mainWindow, parent=None):
+    def __init__(self, mainWindow, openDoorKey, voiceKey, warnDoorKey, routeInfoKey, welcomeKey,  parent=None):
         super(LocationControl, self).__init__(parent)
+        self.welcomeKey = welcomeKey
+        self.routeInfoKey = routeInfoKey
+        self.warnDoorKey = warnDoorKey
+        self.voiceKey = voiceKey
+        self.openDoorKey = openDoorKey
         self.mainWindow = mainWindow
+
+    def initKeys(self):
+        if self.warnDoorKey != '':
+            keyboard.add_hotkey('Ctrl+' + self.warnDoorKey, )
+        if self.routeInfoKey !=  '':
+            keyboard.add_hotkey('Ctrl+' + self.routeInfoKey, )
+        if self.welcomeKey != '':
+            keyboard.add_hotkey('Ctrl+' + self.welcomeKey, )
 
     def run(self):
         while True:

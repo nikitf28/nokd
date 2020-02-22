@@ -113,7 +113,7 @@ def getRoutes(username):
         response = requests.get(url)
         response.encoding = 'utf-8'
         response.raise_for_status()
-        # print(response.text)
+        #print(response.text)
         return response.text
     except HTTPError as http_err:
         print(f'HTTP error occurred: {http_err}')  # Python 3.6
@@ -230,6 +230,7 @@ def countStat():
 
 def getStops(route):
     url = settings.domain + '/API/methods.php?class=Routes&method=getInf&number=' + route + settings.pwd
+    #print(url)
     try:
         response = requests.get(url)
         response.encoding = 'utf-8'

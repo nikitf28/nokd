@@ -42,7 +42,8 @@ class GUI(QWidget):
         gameDir = parser.get('NOKD', 'game_path')
         self.logsBox = QPlainTextEdit()
         self.initUI()
-        initAutoInfo()
+        if username != '-1':
+            initAutoInfo()
 
     def closeEvent(self, event):
         api.endWork(username, str((time.process_time() - timeBegin) // 60))
@@ -419,6 +420,8 @@ def loginAPI():
             for route in routes:
                 routeBox.addItem(api.html_decode(route['number']))
 
+        initAutoInfo()
+
 
 def initAutoInfo():
     currentRoute = routeBox.currentText()
@@ -430,6 +433,8 @@ def initAutoInfo():
     busStops = json.loads(nonParsedStops)
 
     endStops = []
+
+    #print(busStops)
 
     for i in range(len(busStops)):
         # print(busStops[i])
