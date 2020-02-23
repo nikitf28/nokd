@@ -51,7 +51,7 @@ class GUI(QWidget):
     def initUI(self):
         global loginEdit, passwordEdit, loginStatusText, driverNameText, driverOrganizationText, workButton, \
             breakButton, accidentButton, routeBox, busBox, graphicEdit, radiobutton1, radiobutton2, welcomeCheck, \
-        routeCheck, stuffCheck, useInfoCheck
+        routeCheck, stuffCheck, useInfoCheck, openDoorEdit, voiceEdit, warnDoorEdit, routeInfoEdit, welcomeEdit
 
         loginText = QLabel('Логин:', self)
         loginText.setFont(defaultFont)
@@ -252,7 +252,9 @@ class GUI(QWidget):
             workButton.setText('Закончить смену')
             timeBegin = datetime.datetime.now()
             api.startWork(username, routeBox.currentText(), graphicEdit.text())
-            thread = location.LocationControl(parent=self, mainWindow=self)
+            thread = location.LocationControl(parent=self, mainWindow=self, openDoorKey=openDoorEdit.text(),
+                                              voiceKey=voiceEdit.text(), warnDoorKey=warnDoorEdit.text(),
+                                              routeInfoKey=routeInfoEdit.text(), welcomeKey=welcomeEdit.text())
             thread.start()
 
         else:

@@ -34,7 +34,7 @@ def getLocation():
     for x in range(0, width, 1):
         for y in range(0, height, 1):
             if color == img.getpixel((x, y)):
-                return ((x - (width - height) // 2) * 1500 // height, y * 1500 // height)
+                return (x - (width - height) // 2) * 1500 // height, y * 1500 // height
 
     return -1, -1
 
